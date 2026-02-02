@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            /* 核心：黑蓝色斜向渐变（深黑→藏蓝→宝蓝），高级不刺眼，适配深色风格 */
             background: linear-gradient(135deg, #050816, #0a1931, #102a49);
             min-height: 100vh;
             margin: 0; 
@@ -15,17 +14,35 @@
             justify-content: center;
             align-items: center;
             font-family: "Microsoft YaHei", 微软雅黑, sans-serif; 
+            overflow: hidden; /* 隐藏动画过程中文字的溢出部分，避免滚动条 */
         }
+        /* 定义下拉动画：从上方-100px位置下滑到原位置，同时从透明变不透明 */
+        @keyframes slideDown {
+            0% {
+                transform: translateY(-100px); /* 初始位置：上方100px */
+                opacity: 0; /* 初始透明 */
+            }
+            100% {
+                transform: translateY(0); /* 结束位置：原居中位置 */
+                opacity: 1; /* 结束不透明 */
+            }
+        }
+        /* 给标题加下拉动画，延迟0.1s，动画时长0.8s */
         h1 {
-            color: #ffffff; /* 白色标题，和深色背景对比鲜明 */
+            color: #ffffff; 
             font-size: 60px; 
             margin: 0 0 20px 0; 
-            text-shadow: 0 0 10px rgba(100, 160, 255, 0.5); /* 轻微蓝光阴影，呼应蓝黑渐变 */
+            text-shadow: 0 0 10px rgba(100, 160, 255, 0.5); 
+            animation: slideDown 0.8s ease-in-out 0.1s forwards;
+            opacity: 0; /* 初始透明，配合动画 */
         }
+        /* 给段落加下拉动画，延迟0.3s（比标题晚一点，更有层次感），动画时长0.8s */
         p {
-            color: #e0efff; /* 浅蓝白段落，比纯白柔和，不刺眼 */
+            color: #e0efff; 
             font-size: 18px;
             margin: 0;
+            animation: slideDown 0.8s ease-in-out 0.3s forwards;
+            opacity: 0; /* 初始透明，配合动画 */
         }
     </style>
 </head>
