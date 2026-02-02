@@ -4,98 +4,171 @@
     <meta charset="UTF-8">
     <title>GitHub - zsy131039</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 引入Pixel Operator像素字体（免费开源CDN，加载快、兼容GitHub Pages） -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixel-operator-font@1.0.0/pixel-operator.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        body {
+        /* 通用样式：黑蓝渐变背景、微软雅黑字体、全屏布局 */
+        body, .page {
+            font-family: "Microsoft YaHei", 微软雅黑, sans-serif;
             background: linear-gradient(135deg, #050816, #0a1931, #102a49);
-            min-height: 100vh;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            color: #fff;
+        }
+        /* 主页面：弹性居中，承载文字+按钮 */
+        .page1 {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
         }
-        /* Pixel Operator核心像素样式：关闭平滑保证边缘锐利，全局复用 */
-        .pixel-operator {
-            font-family: "Pixel Operator", monospace; /* 核心字体设置 */
-            font-smooth: never;
-            -webkit-font-smoothing: none; /* 关键：禁止浏览器模糊像素边缘 */
-            -moz-osx-font-smoothing: grayscale;
-            letter-spacing: 2px; /* 微调字间距，适配像素风格舒展度 */
-        }
-        /* 初始文字样式（Pixel Operator+蓝光阴影，匹配深色背景，字号适配该字体） */
-        .init-text h1 {
-            color: #ffffff;
-            font-size: 60px; /* 该字体舒展，大字号无拥挤，复古感拉满 */
-            margin: 0 0 25px 0;
+        /* 主页面文字样式 */
+        .page1 h1 {
+            font-size: 60px;
+            margin: 0 0 40px 0;
             text-shadow: 0 0 10px rgba(100, 160, 255, 0.5);
         }
-        .init-text p {
+        .page1 p {
+            font-size: 18px;
             color: #e0efff;
-            font-size: 18px; /* 中字号适配，中英文可读性都极佳 */
-            margin: 0;
+            margin-bottom: 60px;
         }
-        /* 图片背景容器：无渐显+全屏填充+防盗用基础CSS（核心功能保留） */
-        .img-bg {
+        /* Next按钮：正中间、黑白渐变边框、长方形、hover效果 */
+        .next-btn {
+            padding: 12px 60px;
+            border: 2px solid;
+            /* 黑白渐变边框 */
+            border-image: linear-gradient(45deg, #000, #fff, #000) 1;
+            background: transparent;
+            color: #ffffff;
+            font-family: "Microsoft YaHei", 微软雅黑;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
+            /* 禁止按钮文字选中 */
+            user-select: none;
+        }
+        .next-btn:hover {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+        /* 花屏容器：全屏覆盖、最高层级、初始隐藏 */
+        .glitch-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
             z-index: 9999;
-            /* 你的黑白纹理图片链接，精准嵌入无错误 */
-            background-image: url("https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/0e17062ade4d4dabbc401e5eedff16cc.jpg~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=2026020216234150B627CEDEE8D3408734&rrcfp=dafada99&x-expires=2086244621&x-signature=gxGDYrUDVbwZS2rbzeiMsLgRX1Y%3D");
-            background-size: cover; /* 全屏填充无黑边，适配所有设备 */
-            background-position: center;
-            background-repeat: no-repeat;
+            background: #000;
             opacity: 0;
             pointer-events: none;
-            /* 防盗用基础设置：禁止选中/拖拽 */
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -webkit-user-drag: none;
-            user-drag: none;
+            /* 花屏错位动画 */
+            animation: glitch 0.1s infinite;
         }
-        /* 回车触发后立即显示图片（无任何渐显/过渡，直接全屏） */
-        .img-bg.active {
+        /* 花屏触发后显示 */
+        .glitch-screen.active {
             opacity: 1;
             pointer-events: auto;
         }
+        /* 花屏核心动画：黑白错位闪烁，模拟花屏效果 */
+        @keyframes glitch {
+            0% { background: #000; }
+            25% { background: #fff; transform: translateX(2px) translateY(1px); }
+            50% { background: #000; transform: translateX(-2px) translateY(-1px); }
+            75% { background: #fff; transform: translateX(1px) translateY(-2px); }
+            100% { background: #000; transform: translateX(-1px) translateY(2px); }
+        }
+        /* 第二页：同背景，Welcome置顶居中 */
+        .page2 {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 40px; /* 置顶间距，可调整 */
+        }
+        .page2 h1 {
+            font-size: 80px;
+            text-shadow: 0 0 15px rgba(80, 140, 255, 0.7);
+            letter-spacing: 5px;
+        }
+        /* 页面切换：初始隐藏第二页 */
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .page1 { z-index: 2; }
+        .page-hidden { display: none; }
     </style>
 </head>
 <body>
-    <!-- 所有文字添加pixel-operator类，统一应用Pixel Operator像素字体 -->
-    <div class="init-text">
-        <h1 class="pixel-operator">Welcome</h1>
-        <p class="pixel-operator">网站正在更新中，请敬请期待 --zsy131039</p>
+    <!-- 主页面：文字+Next按钮 -->
+    <div class="page page1" id="page1">
+        <h1>Welcome</h1>
+        <p>网站正在更新中，请敬请期待 --zsy131039</p>
+        <button class="next-btn" id="nextBtn">Next</button>
     </div>
 
-    <!-- 图片背景容器 -->
-    <div class="img-bg" id="imgBg"></div>
+    <!-- 第二页：同背景，Welcome置顶居中 -->
+    <div class="page page2 page-hidden" id="page2">
+        <h1>Welcome</h1>
+    </div>
+
+    <!-- 花屏容器 -->
+    <div class="glitch-screen" id="glitchScreen"></div>
+
+    <!-- 刺耳音效：隐藏的音频标签，自动预加载 -->
+    <audio id="glitchAudio" preload="auto">
+        <!-- 开源刺耳音效CDN，无跨域，加载快 -->
+        <source src="https://cdn.jsdelivr.net/gh/freesound/archive@master/sounds/344/344789__jokerman__digital-glitch-01.wav" type="audio/wav">
+    </audio>
 
     <script>
-        const imgBg = document.getElementById('imgBg');
-        let isTriggered = false; // 防重复触发标记，确保回车仅生效一次
+        // 获取所有核心元素
+        const page1 = document.getElementById('page1');
+        const page2 = document.getElementById('page2');
+        const nextBtn = document.getElementById('nextBtn');
+        const glitchScreen = document.getElementById('glitchScreen');
+        const glitchAudio = document.getElementById('glitchAudio');
+        // 防重复触发标记
+        let isTriggered = false;
 
-        // 回车键（keyCode=13）触发图片全屏显示
-        document.addEventListener('keydown', function(e) {
-            if (e.keyCode === 13 && !isTriggered) {
-                imgBg.classList.add('active');
-                isTriggered = true;
-            }
+        // 核心触发函数：点击按钮/按ENTER都执行此函数
+        function triggerGlitch() {
+            if (isTriggered) return;
+            isTriggered = true;
+
+            // 1. 显示花屏+播放刺耳音效
+            glitchScreen.classList.add('active');
+            glitchAudio.volume = 1; // 音效音量
+            glitchAudio.play();
+
+            // 2. 1秒（1000ms）后执行：隐藏花屏+停止音效+跳转页面
+            setTimeout(() => {
+                // 停止音效
+                glitchAudio.pause();
+                glitchAudio.currentTime = 0; // 重置音效到开头
+                // 隐藏花屏
+                glitchScreen.classList.remove('active');
+                // 跳转页面：隐藏主页面，显示第二页
+                page1.classList.add('page-hidden');
+                page2.classList.remove('page-hidden');
+            }, 1000);
+        }
+
+        // 触发方式1：点击Next按钮
+        nextBtn.addEventListener('click', triggerGlitch);
+
+        // 触发方式2：按下ENTER键
+        document.addEventListener('keydown', (e) => {
+            if (e.keyCode === 13) triggerGlitch();
         });
-
-        // 多重JS防盗用：禁止右键另存、拖拽图片、复制图片（核心防护保留）
-        document.addEventListener('contextmenu', (e) => isTriggered && e.preventDefault());
-        document.addEventListener('dragstart', (e) => isTriggered && e.preventDefault());
-        document.addEventListener('copy', (e) => isTriggered && e.preventDefault());
     </script>
 </body>
 </html>
