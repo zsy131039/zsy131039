@@ -11,14 +11,54 @@
             box-sizing: border-box;
         }
         body {
-            background: #050816; /* 底层背景，和翻页背景统一，避免露白 */
+            background: #050816;
             font-family: "Microsoft YaHei", 微软雅黑, sans-serif;
+            overflow: hidden;
         }
-        /* 翻页容器：开启3D透视，实现书页翻页的立体效果 */
+        /* 雪花屏容器：全屏覆盖，最高层级，初始显示 */
+        .snow-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000; /* 雪花屏底色，纯黑适配雪花 */
+            z-index: 9999; /* 覆盖所有内容 */
+            pointer-events: none; /* 不阻挡后续事件 */
+            transition: opacity 0.3s ease-out; /* 雪花屏淡出过渡 */
+        }
+        /* 雪花屏结束后隐藏 */
+        .snow-screen.hidden {
+            opacity: 0;
+            z-index: -1;
+        }
+        /* 雪花样式：白色小点，随机大小/位置/动画时长 */
+        .snow {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: snowFall linear infinite;
+            opacity: 0.7;
+        }
+        /* 雪花下落动画 */
+        @keyframes snowFall {
+            0% {
+                transform: translateY(-10px) scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+        /* 翻页容器：3D透视，书页翻页基础 */
         .page-container {
             width: 100vw;
             height: 100vh;
-            perspective: 1500px; /* 3D透视距离，数值越小立体效果越强 */
+            perspective: 1500px;
             position: relative;
             overflow: hidden;
         }
@@ -30,94 +70,104 @@
             top: 0;
             left: 0;
             background: linear-gradient(135deg, #050816, #0a1931, #102a49);
-            backface-visibility: hidden; /* 隐藏元素背面，避免翻页时穿模 */
-            transform-origin: left center; /* 翻页原点：左侧居中（仿真书页从左翻） */
-            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); /* 翻页缓动曲线，更贴合真实翻页 */
+            backface-visibility: hidden;
+            transform-origin: left center; /* 左侧书页翻页 */
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
         }
-        /* 第一页：初始显示，作为翻页的“正面书页” */
+        /* 第一页：初始显示，居中布局 */
         .page1 {
-            z-index: 2; /* 层级高于第二页，优先显示 */
+            z-index: 2;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
         }
-        /* 第二页：初始隐藏，作为翻页的“背面书页” */
+        /* 第二页：初始隐藏，Welcome置顶居中 */
         .page2 {
             z-index: 1;
-            transform: rotateY(180deg); /* 初始沿Y轴旋转180度隐藏 */
+            transform: rotateY(180deg);
         }
-        /* 翻页触发后：第一页沿Y轴旋转-180度（向左翻页），露出第二页 */
+        /* 翻页触发后：第一页翻折，露出第二页 */
         .page-container.page-turned .page1 {
             transform: rotateY(-180deg);
         }
-
-        /* 第一页文字样式（保留原有下拉动画+蓝光阴影） */
+        /* 第一页文字样式（保留蓝光阴影） */
         .page1 h1 {
             color: #ffffff;
             font-size: 60px;
             margin: 0 0 20px 0;
             text-shadow: 0 0 10px rgba(100, 160, 255, 0.5);
-            animation: slideDown 0.8s ease-in-out 0.1s forwards;
-            opacity: 0;
         }
         .page1 p {
             color: #e0efff;
             font-size: 18px;
             margin: 0;
-            animation: slideDown 0.8s ease-in-out 0.3s forwards;
-            opacity: 0;
         }
-
-        /* 第二页核心：Welcome 页面最上方居中 */
+        /* 第二页核心：Welcome 页面最上方水平居中 */
         .page2 .welcome-title {
             color: #ffffff;
             font-size: 60px;
             text-shadow: 0 0 15px rgba(80, 140, 255, 0.7);
             letter-spacing: 4px;
-            text-align: center; /* 水平居中 */
+            text-align: center;
             width: 100%;
-            margin-top: 40px; /* 距离顶部的间距，可按需调整 */
-        }
-
-        /* 保留原有下拉动画 */
-        @keyframes slideDown {
-            0% {
-                transform: translateY(-100px);
-                opacity: 0;
-            }
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            margin-top: 40px; /* 距离顶部间距，可按需调 */
         }
     </style>
 </head>
 <body>
+    <!-- 雪花屏容器：动态生成雪花 -->
+    <div class="snow-screen" id="snowScreen"></div>
+
+    <!-- 翻页容器：两页内容 -->
     <div class="page-container" id="pageContainer">
-        <!-- 第一页：原有更新提示页（带下拉动画） -->
         <div class="page page1">
             <h1>Welcome</h1>
             <p>网站正在更新中，请敬请期待 --zsy131039</p>
         </div>
-        <!-- 第二页：书页翻页后显示，Welcome置顶居中 -->
         <div class="page page2">
             <h1 class="welcome-title">Welcome</h1>
         </div>
     </div>
 
     <script>
+        // 获取核心元素
+        const snowScreen = document.getElementById('snowScreen');
         const pageContainer = document.getElementById('pageContainer');
-        let isTurned = false; // 防重复翻页标记
+        const snowCount = 80; // 雪花数量，数值越大雪花越密
 
-        // 回车键触发书页翻页
-        document.addEventListener('keydown', (e) => {
-            // 回车键keyCode=13，仅未翻页时触发
-            if (e.keyCode === 13 && !isTurned) {
-                pageContainer.classList.add('page-turned');
-                isTurned = true;
+        // 1. 动态生成雪花
+        function createSnow() {
+            for (let i = 0; i < snowCount; i++) {
+                const snow = document.createElement('div');
+                snow.className = 'snow';
+                // 随机雪花大小：2-6px
+                const size = Math.random() * 4 + 2;
+                snow.style.width = `${size}px`;
+                snow.style.height = `${size}px`;
+                // 随机水平位置：0-100%
+                snow.style.left = `${Math.random() * 100}%`;
+                // 随机动画时长：2-5s（雪花下落速度不同）
+                const duration = Math.random() * 3 + 2;
+                snow.style.animationDuration = `${duration}s`;
+                // 随机动画延迟：0-3s（雪花不同时开始下落）
+                snow.style.animationDelay = `${Math.random() * 3}s`;
+                snowScreen.appendChild(snow);
             }
-        });
+        }
+
+        // 2. 核心逻辑：雪花屏显示1秒后，隐藏并触发翻页
+        function initPage() {
+            createSnow(); // 生成雪花
+            // 1000ms=1秒后执行后续操作
+            setTimeout(() => {
+                snowScreen.classList.add('hidden'); // 隐藏雪花屏
+                pageContainer.classList.add('page-turned'); // 触发书页翻页，切到第二页
+            }, 1000);
+        }
+
+        // 页面加载完成后执行
+        window.onload = initPage;
     </script>
 </body>
 </html>
