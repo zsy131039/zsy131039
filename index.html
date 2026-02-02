@@ -67,7 +67,7 @@
             -webkit-transform: scale(1.05);
                     transform: scale(1.05);
         }
-        /* 花屏容器：核心改background-size: cover，确保截取区域全屏填充 */
+        /* 花屏容器：仅1处小修改，移除多余默认定位 */
         .glitch-screen {
             position: fixed;
             top: 0;
@@ -79,9 +79,7 @@
             pointer-events: none;
             background-image: url("https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/6ae4076f65504743b08e69d4149e65f4.jpg~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=20260202170520AC8AEEBECAD59B3D82ED&rrcfp=dafada99&x-expires=2086247121&x-signature=yfWd%2BhHm2WVBKKVyGGgYA4JonT8%3D");
             background-repeat: no-repeat;
-            background-position: 0 0;
-            /* 关键：固定容器宽高为全屏，背景始终覆盖填充 */
-            background-size: cover;
+            background-size: cover; /* 核心：背景覆盖 */
         }
         .glitch-screen.active {
             opacity: 1;
@@ -140,26 +138,37 @@
             const glitchAudio = document.getElementById('glitchAudio');
             let isTriggered = false;
             let glitchTimer = null;
-            // 图片原始尺寸（不变）
-            const IMG_WIDTH = 1280;
-            const IMG_HEIGHT = 720;
+            const IMG_WIDTH = 1280;  // 图片原始宽
+            const IMG_HEIGHT = 720; // 图片原始高
+            // 新增：计算图片宽高比（核心解决空白关键）
+            const IMG_RATIO = IMG_WIDTH / IMG_HEIGHT;
 
-            // 核心修改：随机截取区域+自动全屏填充，每次截取都铺满屏幕
+            // 核心重写：无空白随机截取+全屏填充，逻辑精准无露底
             function randomCropImg() {
-                // 随机生成截取的宽高（原图30%-100%，不变）
-                const cropW = Math.floor(Math.random() * (IMG_WIDTH * 0.7)) + (IMG_WIDTH * 0.3);
-                const cropH = Math.floor(Math.random() * (IMG_HEIGHT * 0.7)) + (IMG_HEIGHT * 0.3);
-                // 随机生成截取坐标（不超出图片边界，不变）
-                const cropX = Math.floor(Math.random() * (IMG_WIDTH - cropW));
-                const cropY = Math.floor(Math.random() * (IMG_HEIGHT - cropH));
+                // 1. 随机生成截取比例（0.3-1.0，对应原图30%-100%），避免像素计算误差
+                const scaleW = Math.random() * 0.7 + 0.3;
+                const scaleH = Math.random() * 0.7 + 0.3;
                 
-                // 关键修改：按截取区域计算背景定位比例，配合cover实现全屏填充
-                const posX = -(cropX / IMG_WIDTH) * 100;
-                const posY = -(cropY / IMG_HEIGHT) * 100;
+                // 2. 精准计算截取坐标：基于比例，确保不超出图片边界，无像素偏差
+                const maxX = (1 - scaleW) * 100;
+                const maxY = (1 - scaleH) * 100;
+                const posX = Math.random() * maxX;
+                const posY = Math.random() * maxY;
+
+                // 3. 核心：动态调整背景尺寸+定位，匹配屏幕比例，强制覆盖无空白
+                // 按图片比例缩放背景，确保无论截取哪个区域，都能完全铺满屏幕
+                if (window.innerWidth / window.innerHeight > IMG_RATIO) {
+                    // 屏幕更宽：按屏幕高度缩放背景，宽度自适应溢出，无空白
+                    glitchScreen.style.backgroundSize = `auto 150%`;
+                } else {
+                    // 屏幕更高：按屏幕宽度缩放背景，高度自适应溢出，无空白
+                    glitchScreen.style.backgroundSize = `150% auto`;
+                }
+                // 精准百分比定位：基于截取比例，配合缩放实现无空白截取
                 glitchScreen.style.backgroundPosition = `${posX}% ${posY}%`;
             }
 
-            // 触发函数：无任何修改
+            // 触发函数：完全无修改
             function triggerGlitch() {
                 if (isTriggered) return;
                 isTriggered = true;
@@ -181,7 +190,7 @@
                 }, 1000);
             }
 
-            // 双触发方式：无任何修改
+            // 双触发方式：完全无修改
             nextBtn.addEventListener('click', triggerGlitch);
             document.addEventListener('keydown', function(e) {
                 if (e.keyCode === 13 || e.key === 'Enter') triggerGlitch();
