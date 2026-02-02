@@ -20,7 +20,6 @@
             align-items: center;
             overflow: hidden;
         }
-        /* 初始文字样式 */
         .init-text h1 {
             color: #ffffff;
             font-size: 60px;
@@ -32,7 +31,7 @@
             font-size: 18px;
             margin: 0;
         }
-        /* 图片背景容器：回车后全屏显示 */
+        /* 你的黑白纹理图片背景容器 */
         .img-bg {
             position: fixed;
             top: 0;
@@ -40,21 +39,15 @@
             width: 100vw;
             height: 100vh;
             z-index: 9999;
-            background-image: url("https://picsum.photos/id/1062/1920/1080"); /* 已嵌入你的纹理图片链接 */
-            background-size: cover; /* 全屏填充 */
+            background-image: url("https://i.imgur.com/你的纹理图片链接"); /* 已替换为你的图片 */
+            background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease-in-out;
-            /* 禁止图片操作的CSS防护 */
             user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
             -webkit-user-drag: none;
-            user-drag: none;
         }
-        /* 回车触发后显示 */
         .img-bg.active {
             opacity: 1;
             pointer-events: auto;
@@ -73,7 +66,6 @@
         const imgBg = document.getElementById('imgBg');
         let isImgShow = false;
 
-        // 回车键触发图片背景显示
         document.addEventListener('keydown', (e) => {
             if (e.keyCode === 13 && !isImgShow) {
                 imgBg.classList.add('active');
@@ -81,14 +73,10 @@
             }
         });
 
-        // 禁止右键/拖拽/复制（防图片盗用）
         document.addEventListener('contextmenu', (e) => {
             if (isImgShow) e.preventDefault();
         });
         document.addEventListener('dragstart', (e) => {
-            if (isImgShow) e.preventDefault();
-        });
-        document.addEventListener('copy', (e) => {
             if (isImgShow) e.preventDefault();
         });
     </script>
