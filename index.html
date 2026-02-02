@@ -84,22 +84,55 @@
             opacity: 1;
             pointer-events: auto;
         }
+        /* 第二页样式优化：垂直排列Welcome+按钮，居中更协调 */
         .page2 {
             display: -webkit-box;
             display: -ms-flexbox;
             display: flex;
-            -webkit-box-align: start;
-                -ms-flex-align: start;
-                    align-items: flex-start;
-            -webkit-box-pack: center;
-                -ms-flex-pack: center;
-                    justify-content: center;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+                -ms-flex-direction: column;
+                    flex-direction: column;
+            -webkit-box-align: center;
+                -ms-flex-align: center;
+                    align-items: center;
+            -webkit-box-pack: start;
+                -ms-flex-pack: start;
+                    justify-content: flex-start;
             padding-top: 40px;
+            gap: 40px; /* Welcome和按钮的间距 */
         }
         .page2 h1 {
             font-size: 80px;
             text-shadow: 0 0 15px rgba(80, 140, 255, 0.7);
             letter-spacing: 5px;
+            margin: 0;
+        }
+        /* 新增：哔哩哔哩按钮样式 - 黑白渐变边框+白色填充+长方形 */
+        .bilibili-btn {
+            padding: 12px 80px; /* 长方形尺寸，可调整 */
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #000, #fff, #000) 1; /* 同Next按钮渐变边框 */
+            background: #ffffff; /* 白色填充 */
+            color: #000000; /* 黑色文字，对比明显 */
+            font-family: "Microsoft YaHei", "微软雅黑";
+            font-size: 24px;
+            text-decoration: none; /* 清除超链接下划线 */
+            letter-spacing: 2px;
+            -webkit-user-select: none;
+               -moz-user-select: none;
+                -ms-user-select: none;
+                    user-select: none;
+            -webkit-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+            outline: none;
+            cursor: pointer;
+        }
+        /* 哔哩哔哩按钮hover效果：发光+轻微放大，与Next按钮交互统一 */
+        .bilibili-btn:hover {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            -webkit-transform: scale(1.05);
+                    transform: scale(1.05);
         }
         .page {
             position: absolute;
@@ -119,9 +152,13 @@
         <p>网站正在更新中，请敬请期待 --zsy131039</p>
         <button class="next-btn" id="nextBtn">Next</button>
     </div>
+
+    <!-- 第二页修改：新增哔哩哔哩超链接按钮，绑定指定B站地址 -->
     <div class="page page2 page-hidden" id="page2">
         <h1>Welcome</h1>
+        <a href="https://space.bilibili.com/3546836189055103?spm_id_from=333.1007.0.0" target="_blank" class="bilibili-btn">哔哩哔哩</a>
     </div>
+
     <div class="glitch-screen" id="glitchScreen"></div>
     <audio id="glitchAudio" preload="auto" muted>
         <source src="https://cdn.jsdelivr.net/gh/freesound/archive@master/sounds/344/344789__jokerman__digital-glitch-01.wav" type="audio/wav">
@@ -165,7 +202,6 @@
                 glitchAudio.volume = 1;
                 glitchAudio.muted = false;
                 glitchAudio.play().catch(err => {});
-                // 核心修改：定时器间隔改为20毫秒（0.02秒），提升截取速度
                 glitchTimer = setInterval(randomCropImg, 20);
 
                 setTimeout(() => {
