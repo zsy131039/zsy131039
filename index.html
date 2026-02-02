@@ -2,8 +2,10 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>？</title>
+    <title>GitHub - zsy131039</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入8-bit Arcade Font像素字体（Google Fonts官方CDN，加载快、兼容性强） -->
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,8 +13,8 @@
             box-sizing: border-box;
         }
         body {
+            /* 原有黑蓝渐变背景，风格统一 */
             background: linear-gradient(135deg, #050816, #0a1931, #102a49);
-            font-family: "Microsoft YaHei", 微软雅黑, sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -20,14 +22,15 @@
             align-items: center;
             overflow: hidden;
         }
-        /* 像素字体样式：匹配参考图的方正像素风格 */
-        .pixel-font {
-            font-family: "Press Start 2P", "Courier New", monospace;
+        /* 8-bit Arcade Font核心样式：关闭平滑保证像素锐利，全局复用 */
+        .arcade-pixel {
+            font-family: "Silkscreen", monospace; /* 8-bit Arcade Font主字体 */
             font-smooth: never;
-            -webkit-font-smoothing: none;
+            -webkit-font-smoothing: none; /* 关键：禁止浏览器模糊像素边缘 */
             -moz-osx-font-smoothing: grayscale;
-            letter-spacing: 2px;
+            letter-spacing: 3px; /* 微调字间距，适配街机像素风格 */
         }
+        /* 初始页面文字样式（8-bit像素字体+蓝光阴影，适配深色背景） */
         .init-text h1 {
             color: #ffffff;
             font-size: 60px;
@@ -39,48 +42,50 @@
             font-size: 18px;
             margin: 0;
         }
-        /* 图片背景容器：删除了渐显效果（移除transition） */
+        /* 图片背景容器：彻底删除渐显效果+全屏填充+防盗用基础CSS */
         .img-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 9999;
+            z-index: 9999; /* 最高层级覆盖所有内容 */
+            /* 你的目标黑白纹理图片链接，精准嵌入 */
             background-image: url("https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/0e17062ade4d4dabbc401e5eedff16cc.jpg~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=2026020216234150B627CEDEE8D3408734&rrcfp=dafada99&x-expires=2086244621&x-signature=gxGDYrUDVbwZS2rbzeiMsLgRX1Y%3D");
-            background-size: cover;
+            background-size: cover; /* 全屏填充无黑边，适配所有设备 */
             background-position: center;
             background-repeat: no-repeat;
             opacity: 0;
             pointer-events: none;
-            /* 已删除过渡效果，图片触发后立即显示 */
+            /* 防盗用基础CSS：禁止选中/拖拽 */
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
             -webkit-user-drag: none;
             user-drag: none;
         }
+        /* 回车触发后立即显示图片（无渐显，直接全屏） */
         .img-bg.active {
             opacity: 1;
             pointer-events: auto;
         }
     </style>
-    <!-- 引入像素字体（Press Start 2P） -->
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- 所有文字添加arcade-pixel类，统一应用8-bit Arcade Font像素字体 -->
     <div class="init-text">
-        <!-- 所有文字添加pixel-font类，应用像素字体 -->
-        <h1 class="pixel-font">Welcome</h1>
-        <p class="pixel-font">网站正在更新中，请敬请期待 --zsy131039</p>
+        <h1 class="arcade-pixel">Welcome</h1>
+        <p class="arcade-pixel">网站正在更新中，请敬请期待 --zsy131039</p>
     </div>
 
+    <!-- 图片背景容器 -->
     <div class="img-bg" id="imgBg"></div>
 
     <script>
         const imgBg = document.getElementById('imgBg');
-        let isTriggered = false;
+        let isTriggered = false; // 防重复触发标记
 
+        // 回车键触发图片（keyCode=13，仅触发一次）
         document.addEventListener('keydown', function(e) {
             if (e.keyCode === 13 && !isTriggered) {
                 imgBg.classList.add('active');
@@ -88,15 +93,10 @@
             }
         });
 
-        document.addEventListener('contextmenu', function(e) {
-            if (isTriggered) e.preventDefault();
-        });
-        document.addEventListener('dragstart', function(e) {
-            if (isTriggered) e.preventDefault();
-        });
-        document.addEventListener('copy', function(e) {
-            if (isTriggered) e.preventDefault();
-        });
+        // 多重JS防盗用：禁止右键/拖拽/复制图片
+        document.addEventListener('contextmenu', function(e) { isTriggered && e.preventDefault(); });
+        document.addEventListener('dragstart', function(e) { isTriggered && e.preventDefault(); });
+        document.addEventListener('copy', function(e) { isTriggered && e.preventDefault(); });
     </script>
 </body>
 </html>
