@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>GitHub - zsy131039</title>
+    <title>？</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         * {
@@ -11,7 +11,6 @@
             box-sizing: border-box;
         }
         body {
-            /* 初始黑蓝渐变背景，保留原有风格 */
             background: linear-gradient(135deg, #050816, #0a1931, #102a49);
             font-family: "Microsoft YaHei", 微软雅黑, sans-serif;
             min-height: 100vh;
@@ -19,9 +18,16 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* 防止页面滚动/溢出 */
+            overflow: hidden;
         }
-        /* 初始页面文字样式（保留蓝光阴影，醒目不刺眼） */
+        /* 像素字体样式：匹配参考图的方正像素风格 */
+        .pixel-font {
+            font-family: "Press Start 2P", "Courier New", monospace;
+            font-smooth: never;
+            -webkit-font-smoothing: none;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: 2px;
+        }
         .init-text h1 {
             color: #ffffff;
             font-size: 60px;
@@ -33,71 +39,61 @@
             font-size: 18px;
             margin: 0;
         }
-        /* 图片背景容器：初始隐藏，回车后全屏显示 */
+        /* 图片背景容器：删除了渐显效果（移除transition） */
         .img-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 9999; /* 最高层级，覆盖所有内容 */
-            /* 已嵌入你提供的图片链接，精准无错 */
+            z-index: 9999;
             background-image: url("https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/0e17062ade4d4dabbc401e5eedff16cc.jpg~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=2026020216234150B627CEDEE8D3408734&rrcfp=dafada99&x-expires=2086244621&x-signature=gxGDYrUDVbwZS2rbzeiMsLgRX1Y%3D");
-            background-size: cover; /* 全屏填充，无黑边，适配所有设备 */
-            background-position: center; /* 图片居中，避免裁剪关键部分 */
-            background-repeat: no-repeat; /* 禁止图片重复 */
-            opacity: 0; /* 初始透明隐藏 */
-            pointer-events: none; /* 初始不拦截鼠标事件 */
-            transition: opacity 0.3s ease-in-out; /* 淡入过渡，丝滑不突兀 */
-            /* CSS基础防保存：禁止选中/拖拽 */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            pointer-events: none;
+            /* 已删除过渡效果，图片触发后立即显示 */
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
             -webkit-user-drag: none;
             user-drag: none;
         }
-        /* 回车触发后：显示图片背景 */
         .img-bg.active {
-            opacity: 1; /* 完全显示 */
-            pointer-events: auto; /* 拦截右键/拖拽等操作 */
+            opacity: 1;
+            pointer-events: auto;
         }
     </style>
+    <!-- 引入像素字体（Press Start 2P） -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- 初始页面内容（原有Welcome+更新提示） -->
     <div class="init-text">
-        <h1>Welcome</h1>
-        <p>网站正在更新中，请敬请期待 --zsy131039</p>
+        <!-- 所有文字添加pixel-font类，应用像素字体 -->
+        <h1 class="pixel-font">Welcome</h1>
+        <p class="pixel-font">网站正在更新中，请敬请期待 --zsy131039</p>
     </div>
 
-    <!-- 图片背景容器（回车触发显示） -->
     <div class="img-bg" id="imgBg"></div>
 
     <script>
-        // 获取图片容器元素
         const imgBg = document.getElementById('imgBg');
-        // 防重复触发标记：确保回车只生效一次
         let isTriggered = false;
 
-        // 核心：监听回车键按下，触发图片显示
         document.addEventListener('keydown', function(e) {
-            // keyCode=13 是回车键，仅未触发时执行
             if (e.keyCode === 13 && !isTriggered) {
-                imgBg.classList.add('active'); // 显示图片
-                isTriggered = true; // 标记为已触发，禁止重复点击
+                imgBg.classList.add('active');
+                isTriggered = true;
             }
         });
 
-        // JS高级防保存：多重拦截，防止图片被另存/复制
-        // 1. 禁止右键菜单（阻止右键「图片另存为」）
         document.addEventListener('contextmenu', function(e) {
             if (isTriggered) e.preventDefault();
         });
-        // 2. 禁止拖拽（阻止拖拽图片到桌面/新标签页保存）
         document.addEventListener('dragstart', function(e) {
             if (isTriggered) e.preventDefault();
         });
-        // 3. 禁止复制（阻止选中图片后复制）
         document.addEventListener('copy', function(e) {
             if (isTriggered) e.preventDefault();
         });
