@@ -19,6 +19,7 @@
             color: #fff;
             margin: 0;
             padding: 0;
+            transition: background 0.1s ease; /* 背景切换过渡，更丝滑 */
         }
         .page1 {
             display: -webkit-box;
@@ -84,7 +85,7 @@
             opacity: 1;
             pointer-events: auto;
         }
-        /* 第二页样式优化：垂直排列Welcome+按钮，居中更协调 */
+        /* 第二页：垂直排列Welcome+两个按钮，间距均匀 */
         .page2 {
             display: -webkit-box;
             display: -ms-flexbox;
@@ -100,7 +101,7 @@
                 -ms-flex-pack: start;
                     justify-content: flex-start;
             padding-top: 40px;
-            gap: 40px; /* Welcome和按钮的间距 */
+            gap: 30px; /* 三个元素的间距，均匀分布 */
         }
         .page2 h1 {
             font-size: 80px;
@@ -108,13 +109,38 @@
             letter-spacing: 5px;
             margin: 0;
         }
-        /* 新增：哔哩哔哩按钮样式 - 黑白渐变边框+白色填充+长方形 */
+        /* 哔哩哔哩按钮样式（不变） */
         .bilibili-btn {
-            padding: 12px 80px; /* 长方形尺寸，可调整 */
+            padding: 12px 80px;
             border: 2px solid;
-            border-image: linear-gradient(45deg, #000, #fff, #000) 1; /* 同Next按钮渐变边框 */
-            background: #ffffff; /* 白色填充 */
-            color: #000000; /* 黑色文字，对比明显 */
+            border-image: linear-gradient(45deg, #000, #fff, #000) 1;
+            background: #ffffff;
+            color: #000000;
+            font-family: "Microsoft YaHei", "微软雅黑";
+            font-size: 24px;
+            text-decoration: none;
+            letter-spacing: 2px;
+            -webkit-user-select: none;
+               -moz-user-select: none;
+                -ms-user-select: none;
+                    user-select: none;
+            -webkit-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+            outline: none;
+            cursor: pointer;
+        }
+        .bilibili-btn:hover {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            -webkit-transform: scale(1.05);
+                    transform: scale(1.05);
+        }
+        /* 新增：视频号按钮样式 - 黑白渐变边框+灰色填充 */
+        .video-btn {
+            padding: 12px 80px; /* 与哔哩哔哩按钮尺寸一致，长方形 */
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #000, #fff, #000) 1; /* 同渐变边框 */
+            background: #888888; /* 灰色填充 */
+            color: #ffffff; /* 白色文字，对比明显 */
             font-family: "Microsoft YaHei", "微软雅黑";
             font-size: 24px;
             text-decoration: none; /* 清除超链接下划线 */
@@ -128,11 +154,15 @@
             outline: none;
             cursor: pointer;
         }
-        /* 哔哩哔哩按钮hover效果：发光+轻微放大，与Next按钮交互统一 */
-        .bilibili-btn:hover {
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        /* 视频号按钮hover效果：灰色发光+轻微放大 */
+        .video-btn:hover {
+            box-shadow: 0 0 20px rgba(180, 180, 180, 0.8);
             -webkit-transform: scale(1.05);
                     transform: scale(1.05);
+        }
+        /* 新增：红色渐变背景（闪烁时使用） */
+        .red-gradient {
+            background: linear-gradient(135deg, #ff0000, #cc0000, #990000) !important;
         }
         .page {
             position: absolute;
@@ -153,10 +183,11 @@
         <button class="next-btn" id="nextBtn">Next</button>
     </div>
 
-    <!-- 第二页修改：新增哔哩哔哩超链接按钮，绑定指定B站地址 -->
+    <!-- 第二页：新增视频号按钮，与哔哩哔哩按钮并列 -->
     <div class="page page2 page-hidden" id="page2">
         <h1>Welcome</h1>
         <a href="https://space.bilibili.com/3546836189055103?spm_id_from=333.1007.0.0" target="_blank" class="bilibili-btn">哔哩哔哩</a>
+        <a href="javascript:;" class="video-btn" id="videoBtn">视频号</a> <!-- 超链接仅触发效果，无实际跳转 -->
     </div>
 
     <div class="glitch-screen" id="glitchScreen"></div>
@@ -172,11 +203,42 @@
             const nextBtn = document.getElementById('nextBtn');
             const glitchScreen = document.getElementById('glitchScreen');
             const glitchAudio = document.getElementById('glitchAudio');
+            const videoBtn = document.getElementById('videoBtn'); // 视频号按钮
             let isTriggered = false;
             let glitchTimer = null;
             const IMG_WIDTH = 1280;
             const IMG_HEIGHT = 720;
             const IMG_RATIO = IMG_WIDTH / IMG_HEIGHT;
+            const body = document.body;
+
+            // 核心：视频号按钮点击 - 红色渐变闪烁3次（0.5秒）
+            videoBtn.addEventListener('click', function() {
+                let flashCount = 0; // 闪烁次数计数器
+                const maxFlash = 3; // 目标闪烁次数
+                const flashInterval = 125; // 每次闪烁间隔（0.5秒/4=125ms，3次闪烁需4个间隔）
+                let flashTimer = null;
+
+                // 闪烁函数：切换红色/黑蓝渐变背景
+                function flashBackground() {
+                    if (flashCount % 2 === 0) {
+                        // 偶数次：红色渐变
+                        body.classList.add('red-gradient');
+                    } else {
+                        // 奇数次：恢复黑蓝渐变
+                        body.classList.remove('red-gradient');
+                    }
+                    flashCount++;
+
+                    // 闪烁3次后停止（3次闪烁对应6个状态切换？不，3次闪烁是：红→黑蓝→红→黑蓝→红→黑蓝，共3次红色显示）
+                    if (flashCount >= maxFlash * 2) {
+                        clearInterval(flashTimer);
+                        body.classList.remove('red-gradient'); // 确保最后恢复黑蓝渐变
+                    }
+                }
+
+                // 启动闪烁定时器，0.5秒内完成3次闪烁
+                flashTimer = setInterval(flashBackground, flashInterval);
+            });
 
             function randomCropImg() {
                 const scaleW = Math.random() * 0.7 + 0.3;
