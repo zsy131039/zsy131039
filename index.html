@@ -10,7 +10,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-        /* 通用：微软雅黑+黑蓝渐变+全屏，修复样式冗余 */
         body, .page {
             font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
             background: linear-gradient(135deg, #050816, #0a1931, #102a49);
@@ -21,7 +20,6 @@
             margin: 0;
             padding: 0;
         }
-        /* 主页面：文字+按钮居中 */
         .page1 {
             display: -webkit-box;
             display: -ms-flexbox;
@@ -47,7 +45,6 @@
             color: #e0efff;
             margin-bottom: 60px;
         }
-        /* Next按钮：黑白渐变边框+hover，保留原有样式 */
         .next-btn {
             padding: 12px 60px;
             border: 2px solid;
@@ -70,7 +67,7 @@
             -webkit-transform: scale(1.05);
                     transform: scale(1.05);
         }
-        /* 花屏容器：修复clipPath兼容，保留0.1秒随机截取核心 */
+        /* 花屏容器：核心改background-size: cover，确保截取区域全屏填充 */
         .glitch-screen {
             position: fixed;
             top: 0;
@@ -83,13 +80,13 @@
             background-image: url("https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/6ae4076f65504743b08e69d4149e65f4.jpg~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=20260202170520AC8AEEBECAD59B3D82ED&rrcfp=dafada99&x-expires=2086247121&x-signature=yfWd%2BhHm2WVBKKVyGGgYA4JonT8%3D");
             background-repeat: no-repeat;
             background-position: 0 0;
-            background-size: 1280px 720px;
+            /* 关键：固定容器宽高为全屏，背景始终覆盖填充 */
+            background-size: cover;
         }
         .glitch-screen.active {
             opacity: 1;
             pointer-events: auto;
         }
-        /* 第二页：同背景+Welcome置顶居中，无修改 */
         .page2 {
             display: -webkit-box;
             display: -ms-flexbox;
@@ -107,7 +104,6 @@
             text-shadow: 0 0 15px rgba(80, 140, 255, 0.7);
             letter-spacing: 5px;
         }
-        /* 页面切换：修复定位层级，避免布局冲突 */
         .page {
             position: absolute;
             top: 0;
@@ -121,31 +117,22 @@
     </style>
 </head>
 <body>
-    <!-- 主页面：无结构修改 -->
     <div class="page page1" id="page1">
         <h1>Welcome</h1>
         <p>网站正在更新中，请敬请期待 --zsy131039</p>
         <button class="next-btn" id="nextBtn">Next</button>
     </div>
-
-    <!-- 跳转页面：无结构修改 -->
     <div class="page page2 page-hidden" id="page2">
         <h1>Welcome</h1>
     </div>
-
-    <!-- 花屏容器：无结构修改 -->
     <div class="glitch-screen" id="glitchScreen"></div>
-
-    <!-- 音效标签：修复闭合，增加兼容格式 -->
     <audio id="glitchAudio" preload="auto" muted>
         <source src="https://cdn.jsdelivr.net/gh/freesound/archive@master/sounds/344/344789__jokerman__digital-glitch-01.wav" type="audio/wav">
         <source src="https://cdn.jsdelivr.net/gh/freesound/archive@master/sounds/344/344789__jokerman__digital-glitch-01.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // 修复：增加DOM加载完成监听，避免元素未加载导致获取失败
         document.addEventListener('DOMContentLoaded', function() {
-            // 所有核心元素获取：无修改
             const page1 = document.getElementById('page1');
             const page2 = document.getElementById('page2');
             const nextBtn = document.getElementById('nextBtn');
@@ -153,25 +140,26 @@
             const glitchAudio = document.getElementById('glitchAudio');
             let isTriggered = false;
             let glitchTimer = null;
+            // 图片原始尺寸（不变）
             const IMG_WIDTH = 1280;
             const IMG_HEIGHT = 720;
 
-            // 核心随机截取函数：无逻辑修改，仅修复小语法
+            // 核心修改：随机截取区域+自动全屏填充，每次截取都铺满屏幕
             function randomCropImg() {
+                // 随机生成截取的宽高（原图30%-100%，不变）
                 const cropW = Math.floor(Math.random() * (IMG_WIDTH * 0.7)) + (IMG_WIDTH * 0.3);
                 const cropH = Math.floor(Math.random() * (IMG_HEIGHT * 0.7)) + (IMG_HEIGHT * 0.3);
+                // 随机生成截取坐标（不超出图片边界，不变）
                 const cropX = Math.floor(Math.random() * (IMG_WIDTH - cropW));
                 const cropY = Math.floor(Math.random() * (IMG_HEIGHT - cropH));
-                // 修复：替换clipPath为背景定位+缩放，解决部分浏览器兼容问题
-                glitchScreen.style.backgroundPosition = `-${cropX}px -${cropY}px`;
-                glitchScreen.style.width = cropW + 'px';
-                glitchScreen.style.height = cropH + 'px';
-                glitchScreen.style.left = Math.floor(Math.random() * (100 - (cropW/IMG_WIDTH)*100)) + '%';
-                glitchScreen.style.top = Math.floor(Math.random() * (100 - (cropH/IMG_HEIGHT)*100)) + '%';
-                glitchScreen.style.transform = `scale(${100/cropW*IMG_WIDTH/100}, ${100/cropH*IMG_HEIGHT/100})`;
+                
+                // 关键修改：按截取区域计算背景定位比例，配合cover实现全屏填充
+                const posX = -(cropX / IMG_WIDTH) * 100;
+                const posY = -(cropY / IMG_HEIGHT) * 100;
+                glitchScreen.style.backgroundPosition = `${posX}% ${posY}%`;
             }
 
-            // 核心触发函数：无逻辑修改
+            // 触发函数：无任何修改
             function triggerGlitch() {
                 if (isTriggered) return;
                 isTriggered = true;
@@ -179,7 +167,7 @@
                 glitchScreen.classList.add('active');
                 glitchAudio.volume = 1;
                 glitchAudio.muted = false;
-                glitchAudio.play().catch(err => {}); // 修复：增加播放异常捕获，避免控制台报错
+                glitchAudio.play().catch(err => {});
                 glitchTimer = setInterval(randomCropImg, 100);
 
                 setTimeout(() => {
@@ -193,10 +181,10 @@
                 }, 1000);
             }
 
-            // 双触发方式：无修改
+            // 双触发方式：无任何修改
             nextBtn.addEventListener('click', triggerGlitch);
             document.addEventListener('keydown', function(e) {
-                if (e.keyCode === 13 || e.key === 'Enter') triggerGlitch(); // 增加Enter键兼容写法
+                if (e.keyCode === 13 || e.key === 'Enter') triggerGlitch();
             });
         });
     </script>
