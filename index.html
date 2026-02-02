@@ -10,14 +10,19 @@
             padding: 0;
             box-sizing: border-box;
         }
-        /* 页面容器：承载两页内容，开启相对定位用于翻页动画 */
+        body {
+            background: #050816; /* 底层背景，和翻页背景统一，避免露白 */
+            font-family: "Microsoft YaHei", 微软雅黑, sans-serif;
+        }
+        /* 翻页容器：开启3D透视，实现书页翻页的立体效果 */
         .page-container {
             width: 100vw;
             height: 100vh;
-            overflow: hidden; /* 隐藏翻页时的溢出内容 */
+            perspective: 1500px; /* 3D透视距离，数值越小立体效果越强 */
             position: relative;
+            overflow: hidden;
         }
-        /* 通用页面样式：黑蓝渐变+居中布局，两页共用 */
+        /* 通用页面样式：黑蓝渐变，两页共用 */
         .page {
             width: 100%;
             height: 100%;
@@ -25,69 +30,91 @@
             top: 0;
             left: 0;
             background: linear-gradient(135deg, #050816, #0a1931, #102a49);
-            font-family: "Microsoft YaHei", 微软雅黑, sans-serif;
+            backface-visibility: hidden; /* 隐藏元素背面，避免翻页时穿模 */
+            transform-origin: left center; /* 翻页原点：左侧居中（仿真书页从左翻） */
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); /* 翻页缓动曲线，更贴合真实翻页 */
+        }
+        /* 第一页：初始显示，作为翻页的“正面书页” */
+        .page1 {
+            z-index: 2; /* 层级高于第二页，优先显示 */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: transform 0.8s ease-in-out; /* 翻页动画过渡 */
         }
-        /* 第一页默认显示，第二页初始居右隐藏 */
-        .page1 { transform: translateX(0); }
-        .page2 { transform: translateX(100%); }
-        /* 翻页后样式：第一页居左隐藏，第二页显示 */
-        .page-container.page-turned .page1 { transform: translateX(-100%); }
-        .page-container.page-turned .page2 { transform: translateX(0); }
+        /* 第二页：初始隐藏，作为翻页的“背面书页” */
+        .page2 {
+            z-index: 1;
+            transform: rotateY(180deg); /* 初始沿Y轴旋转180度隐藏 */
+        }
+        /* 翻页触发后：第一页沿Y轴旋转-180度（向左翻页），露出第二页 */
+        .page-container.page-turned .page1 {
+            transform: rotateY(-180deg);
+        }
 
-        /* 第一页文字样式（保留原有效果） */
+        /* 第一页文字样式（保留原有下拉动画+蓝光阴影） */
         .page1 h1 {
             color: #ffffff;
             font-size: 60px;
             margin: 0 0 20px 0;
             text-shadow: 0 0 10px rgba(100, 160, 255, 0.5);
+            animation: slideDown 0.8s ease-in-out 0.1s forwards;
+            opacity: 0;
         }
         .page1 p {
             color: #e0efff;
             font-size: 18px;
             margin: 0;
+            animation: slideDown 0.8s ease-in-out 0.3s forwards;
+            opacity: 0;
         }
 
-        /* 第二页Welcome样式：居中+放大+蓝光阴影强化 */
-        .page2 h1 {
+        /* 第二页核心：Welcome 页面最上方居中 */
+        .page2 .welcome-title {
             color: #ffffff;
-            font-size: 80px; /* 字号放大更醒目 */
-            text-shadow: 0 0 15px rgba(80, 140, 255, 0.7); /* 蓝光阴影增强 */
-            letter-spacing: 5px; /* 字间距增加，更舒展 */
+            font-size: 60px;
+            text-shadow: 0 0 15px rgba(80, 140, 255, 0.7);
+            letter-spacing: 4px;
+            text-align: center; /* 水平居中 */
+            width: 100%;
+            margin-top: 40px; /* 距离顶部的间距，可按需调整 */
+        }
+
+        /* 保留原有下拉动画 */
+        @keyframes slideDown {
+            0% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 页面容器：包含两页内容，通过类名切换控制翻页 -->
     <div class="page-container" id="pageContainer">
-        <!-- 第一页：原有更新提示页 -->
+        <!-- 第一页：原有更新提示页（带下拉动画） -->
         <div class="page page1">
             <h1>Welcome</h1>
             <p>网站正在更新中，请敬请期待 --zsy131039</p>
         </div>
-        <!-- 第二页：翻页后显示，Welcome居中 -->
+        <!-- 第二页：书页翻页后显示，Welcome置顶居中 -->
         <div class="page page2">
-            <h1>Welcome</h1>
+            <h1 class="welcome-title">Welcome</h1>
         </div>
     </div>
 
     <script>
-        // 获取页面容器元素
         const pageContainer = document.getElementById('pageContainer');
-        // 标记是否已翻页，避免重复触发
-        let isTurned = false;
+        let isTurned = false; // 防重复翻页标记
 
-        // 监听键盘按键按下事件
+        // 回车键触发书页翻页
         document.addEventListener('keydown', (e) => {
-            // 检测是否按下回车键（keyCode 13 兼容所有浏览器）
+            // 回车键keyCode=13，仅未翻页时触发
             if (e.keyCode === 13 && !isTurned) {
-                // 添加翻页类名，触发CSS动画
                 pageContainer.classList.add('page-turned');
-                // 标记为已翻页
                 isTurned = true;
             }
         });
