@@ -10,6 +10,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+        /* 通用：微软雅黑+黑蓝渐变背景+全屏 */
         body, .page {
             font-family: "Microsoft YaHei", 微软雅黑, sans-serif;
             background: linear-gradient(135deg, #050816, #0a1931, #102a49);
@@ -18,6 +19,7 @@
             overflow: hidden;
             color: #fff;
         }
+        /* 主页面：文字+按钮居中 */
         .page1 {
             display: flex;
             flex-direction: column;
@@ -34,13 +36,13 @@
             color: #e0efff;
             margin-bottom: 60px;
         }
+        /* Next按钮：黑白渐变边框+hover效果 */
         .next-btn {
             padding: 12px 60px;
             border: 2px solid;
             border-image: linear-gradient(45deg, #000, #fff, #000) 1;
             background: transparent;
             color: #ffffff;
-            font-family: "Microsoft YaHei", 微软雅黑;
             font-size: 24px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -51,7 +53,7 @@
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
             transform: scale(1.05);
         }
-        /* 雪花屏容器：使用你提供的图片作为背景 */
+        /* 花屏容器：全屏覆盖+最高层级+初始隐藏，核心用JS控制随机截取 */
         .glitch-screen {
             position: fixed;
             top: 0;
@@ -59,17 +61,18 @@
             width: 100vw;
             height: 100vh;
             z-index: 9999;
-            background-image: url("https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/0e17062ade4d4dabbc401e5eedff16cc.jpg~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=2026020216234150B627CEDEE8D3408734&rrcfp=dafada99&x-expires=2086244621&x-signature=gxGDYrUDVbwZS2rbzeiMsLgRX1Y%3D");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
             opacity: 0;
             pointer-events: none;
+            /* 关键：开启背景裁剪定位，用于JS随机截取 */
+            background-image: url("https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/6ae4076f65504743b08e69d4149e65f4.jpg~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=20260202170520AC8AEEBECAD59B3D82ED&rrcfp=dafada99&x-expires=2086247121&x-signature=yfWd%2BhHm2WVBKKVyGGgYA4JonT8%3D");
+            background-repeat: no-repeat;
+            transform: scale(1);
         }
         .glitch-screen.active {
             opacity: 1;
             pointer-events: auto;
         }
+        /* 第二页：同背景+Welcome置顶居中 */
         .page2 {
             display: flex;
             align-items: flex-start;
@@ -81,6 +84,7 @@
             text-shadow: 0 0 15px rgba(80, 140, 255, 0.7);
             letter-spacing: 5px;
         }
+        /* 页面切换：初始隐藏第二页 */
         .page {
             position: absolute;
             top: 0;
@@ -92,45 +96,87 @@
     </style>
 </head>
 <body>
+    <!-- 主页面 -->
     <div class="page page1" id="page1">
         <h1>Welcome</h1>
         <p>网站正在更新中，请敬请期待 --zsy131039</p>
         <button class="next-btn" id="nextBtn">Next</button>
     </div>
+
+    <!-- 跳转页面 -->
     <div class="page page2 page-hidden" id="page2">
         <h1>Welcome</h1>
     </div>
+
+    <!-- 花屏容器 -->
     <div class="glitch-screen" id="glitchScreen"></div>
+
+    <!-- 刺耳音效：预加载 -->
     <audio id="glitchAudio" preload="auto">
         <source src="https://cdn.jsdelivr.net/gh/freesound/archive@master/sounds/344/344789__jokerman__digital-glitch-01.wav" type="audio/wav">
-    
+    </audio>
 
     <script>
+        // 获取核心元素
         const page1 = document.getElementById('page1');
         const page2 = document.getElementById('page2');
         const nextBtn = document.getElementById('nextBtn');
         const glitchScreen = document.getElementById('glitchScreen');
         const glitchAudio = document.getElementById('glitchAudio');
+        // 防重复触发+定时器存储（用于停止随机截取）
         let isTriggered = false;
+        let glitchTimer = null;
+        // 图片原始尺寸（匹配你提供的图片：1280*720）
+        const IMG_WIDTH = 1280;
+        const IMG_HEIGHT = 720;
 
+        // 核心：随机截取图片函数 - 随机生成裁剪位置+大小，作用到花屏容器
+        function randomCropImg() {
+            // 随机生成裁剪的宽度（原图的30%-100%）
+            const cropW = Math.floor(Math.random() * (IMG_WIDTH * 0.7)) + (IMG_WIDTH * 0.3);
+            // 随机生成裁剪的高度（原图的30%-100%）
+            const cropH = Math.floor(Math.random() * (IMG_HEIGHT * 0.7)) + (IMG_HEIGHT * 0.3);
+            // 随机生成裁剪左上角X坐标（不超出图片范围）
+            const cropX = Math.floor(Math.random() * (IMG_WIDTH - cropW));
+            // 随机生成裁剪左上角Y坐标（不超出图片范围）
+            const cropY = Math.floor(Math.random() * (IMG_HEIGHT - cropH));
+            
+            // 给花屏容器设置裁剪属性：定位+大小+缩放至全屏
+            glitchScreen.style.backgroundPosition = `-${cropX}px -${cropY}px`;
+            glitchScreen.style.backgroundSize = `${IMG_WIDTH}px ${IMG_HEIGHT}px`;
+            glitchScreen.style.clipPath = `rect(${cropY}px, ${cropX + cropW}px, ${cropY + cropH}px, ${cropX}px)`;
+        }
+
+        // 核心触发函数：点击按钮/按ENTER执行
         function triggerGlitch() {
             if (isTriggered) return;
             isTriggered = true;
 
+            // 1. 显示花屏+播放音效
             glitchScreen.classList.add('active');
             glitchAudio.volume = 1;
             glitchAudio.play();
+            // 2. 启动定时器：每0.1秒（100ms）执行一次随机截取，模拟花屏
+            glitchTimer = setInterval(randomCropImg, 100);
 
+            // 3. 1秒后执行：停止裁剪+停止音效+隐藏花屏+页面跳转
             setTimeout(() => {
+                // 清除定时器，停止随机截取
+                clearInterval(glitchTimer);
+                // 停止音效并重置
                 glitchAudio.pause();
                 glitchAudio.currentTime = 0;
+                // 隐藏花屏
                 glitchScreen.classList.remove('active');
+                // 页面跳转：隐藏主页面，显示第二页
                 page1.classList.add('page-hidden');
                 page2.classList.remove('page-hidden');
             }, 1000);
         }
 
+        // 触发方式1：点击Next按钮
         nextBtn.addEventListener('click', triggerGlitch);
+        // 触发方式2：按下ENTER键
         document.addEventListener('keydown', (e) => {
             if (e.keyCode === 13) triggerGlitch();
         });
