@@ -14,35 +14,32 @@
             justify-content: center;
             align-items: center;
             font-family: "Microsoft YaHei", 微软雅黑, sans-serif; 
-            overflow: hidden; /* 隐藏动画过程中文字的溢出部分，避免滚动条 */
+            overflow: hidden;
         }
-        /* 定义下拉动画：从上方-100px位置下滑到原位置，同时从透明变不透明 */
         @keyframes slideDown {
             0% {
-                transform: translateY(-100px); /* 初始位置：上方100px */
+                transform: translateY(-100px);
                 opacity: 0; /* 初始透明 */
             }
             100% {
-                transform: translateY(0); /* 结束位置：原居中位置 */
-                opacity: 1; /* 结束不透明 */
+                transform: translateY(0);
+                opacity: 1;
             }
         }
-        /* 给标题加下拉动画，延迟0.1s，动画时长0.8s */
         h1 {
             color: #ffffff; 
             font-size: 60px; 
             margin: 0 0 20px 0; 
             text-shadow: 0 0 10px rgba(100, 160, 255, 0.5); 
-            animation: slideDown 0.8s ease-in-out 0.1s forwards;
-            opacity: 0; /* 初始透明，配合动画 */
+            animation: slideDown 1.2s ease-in-out 0.3s forwards;
+            opacity: 0;
         }
-        /* 给段落加下拉动画，延迟0.3s（比标题晚一点，更有层次感），动画时长0.8s */
         p {
             color: #e0efff; 
             font-size: 18px;
             margin: 0;
-            animation: slideDown 0.8s ease-in-out 0.3s forwards;
-            opacity: 0; /* 初始透明，配合动画 */
+            animation: slideDown 1.2s ease-in-out 0.7s forwards;
+            opacity: 0;
         }
     </style>
 </head>
