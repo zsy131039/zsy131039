@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <title>GitHub - zsy131039</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <!-- 新增：网页icon（favicon），使用你提供的图片 -->
+    <link rel="icon" href="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/3f11d722036b47448712220100d1780b.jpeg~tplv-a9rns2rl98-image.jpeg?lk3s=8e244e95&rcl=2026020715314136021E9E722E6D0D7A3D&rrcfp=dafada99&x-expires=2086280381&x-signature=G9p9B%2BzQdF%2B80D%2B2cV5WJtB1%2BqM%3D" type="image/jpeg">
+    <link rel="shortcut icon" href="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/3f11d722036b47448712220100d1780b.jpeg~tplv-a9rns2rl98-image.jpeg?lk3s=8e244e95&rcl=2026020715314136021E9E722E6D0D7A3D&rrcfp=dafada99&x-expires=2086280381&x-signature=G9p9B%2BzQdF%2B80D%2B2cV5WJtB1%2BqM%3D" type="image/jpeg">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        /* 基础样式：提高黑蓝渐变优先级，后续通过!important覆盖 */
         body {
             font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
             background: linear-gradient(135deg, #050816, #0a1931, #102a49) !important;
@@ -20,7 +22,7 @@
             color: #fff;
             margin: 0;
             padding: 0;
-            transition: background 0.08s ease !important; /* 加快过渡，闪烁更明显 */
+            transition: background 0.08s ease !important;
         }
         .page {
             width: 100%;
@@ -95,7 +97,6 @@
             opacity: 1;
             pointer-events: auto;
         }
-        /* 第二页：垂直排列，间距均匀 */
         .page2 {
             display: -webkit-box;
             display: -ms-flexbox;
@@ -120,7 +121,6 @@
             letter-spacing: 5px;
             margin: 0;
         }
-        /* 哔哩哔哩按钮（不变） */
         .bilibili-btn {
             padding: 12px 80px;
             border: 2px solid;
@@ -145,7 +145,6 @@
             -webkit-transform: scale(1.05);
                     transform: scale(1.05);
         }
-        /* 视频号按钮（不变） */
         .video-btn {
             padding: 12px 80px;
             border: 2px solid;
@@ -170,11 +169,10 @@
             -webkit-transform: scale(1.05);
                     transform: scale(1.05);
         }
-        /* 关键修复：红色渐变样式，提高优先级，确保覆盖原有背景 */
         body.red-gradient {
             background: linear-gradient(135deg, #ff0000, #cc0000, #990000) !important;
             background-size: 200% 200% !important;
-            animation: redPulse 0.08s ease !important; /* 轻微脉冲，闪烁更明显 */
+            animation: redPulse 0.08s ease !important;
         }
         @keyframes redPulse {
             0% { background-position: 0% 50%; }
@@ -217,32 +215,26 @@
             const IMG_HEIGHT = 720;
             const IMG_RATIO = IMG_WIDTH / IMG_HEIGHT;
 
-            // 核心修复：视频号按钮点击 - 红色闪烁逻辑（确保生效）
             videoBtn.addEventListener('click', function() {
-                // 防止重复点击触发多次闪烁
                 if (body.classList.contains('flashing')) return;
                 body.classList.add('flashing');
 
-                const flashTimes = 3; // 闪烁3次
-                const totalDuration = 500; // 总时长0.5秒
-                const interval = totalDuration / (flashTimes * 2); // 每次切换间隔（红→黑蓝为一次闪烁）
+                const flashTimes = 3;
+                const totalDuration = 500;
+                const interval = totalDuration / (flashTimes * 2);
                 let count = 0;
 
-                // 闪烁定时器：精准切换背景
                 const flashTimer = setInterval(() => {
                     if (count % 2 === 0) {
-                        // 偶数次：显示红色渐变
                         body.classList.add('red-gradient');
                     } else {
-                        // 奇数次：恢复黑蓝渐变
                         body.classList.remove('red-gradient');
                     }
 
                     count++;
-                    // 完成3次闪烁（6次切换）后停止
                     if (count >= flashTimes * 2) {
                         clearInterval(flashTimer);
-                        body.classList.remove('red-gradient', 'flashing'); // 最终恢复初始状态
+                        body.classList.remove('red-gradient', 'flashing');
                     }
                 }, interval);
             });
