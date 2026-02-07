@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>GitHub - zsy131039</title>
+    <title>Github - zsy131039</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- 网页icon -->
     <link rel="icon" href="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/cfb0fb2bf77a4c33a5c4fcc693edd936.jpg~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=202602071350202E933252BAE60E15B102&rrcfp=dafada99&x-expires=2086667421&x-signature=ktrgjSDQrbjDfaGwn%2BpO6WcFaxE%3D" type="image/png">
@@ -23,6 +23,25 @@
             margin: 0;
             padding: 0;
             transition: background 0.08s ease !important;
+            /* 给body添加相对定位，作为置底信息的父容器 */
+            position: relative;
+        }
+        /* 新增：所有页面置底信息 - 右下角固定 */
+        .fixed-bottom {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+            font-size: 14px;
+            color: #e0efff;
+            text-align: right;
+            line-height: 1.5;
+            pointer-events: none; /* 避免遮挡其他元素点击 */
+        }
+        .fixed-bottom a {
+            color: #a0c8ff;
+            text-decoration: underline;
+            pointer-events: auto; /* 链接可点击 */
         }
         .page {
             width: 100%;
@@ -97,7 +116,6 @@
             opacity: 1;
             pointer-events: auto;
         }
-        /* 第二页：增加一个按钮的间距，保持布局均匀 */
         .page2 {
             display: -webkit-box;
             display: -ms-flexbox;
@@ -113,7 +131,7 @@
                 -ms-flex-pack: start;
                     justify-content: flex-start;
             padding-top: 40px;
-            gap: 25px; /* 微调间距，适配三个元素 */
+            gap: 25px;
             z-index: 1;
         }
         .page2 h1 {
@@ -122,7 +140,6 @@
             letter-spacing: 5px;
             margin: 0;
         }
-        /* 哔哩哔哩/关于按钮通用样式（保持一致） */
         .bilibili-btn, .about-btn {
             padding: 12px 80px;
             border: 2px solid;
@@ -147,7 +164,6 @@
             -webkit-transform: scale(1.05);
                     transform: scale(1.05);
         }
-        /* 视频号按钮样式（不变） */
         .video-btn {
             padding: 12px 80px;
             border: 2px solid;
@@ -172,7 +188,7 @@
             -webkit-transform: scale(1.05);
                     transform: scale(1.05);
         }
-        /* 新增：第三个页面（关于页）样式，和整体风格统一 */
+        /* 调整：第三页 - About按钮置顶居中，下方添加联系信息 */
         .page3 {
             display: -webkit-box;
             display: -ms-flexbox;
@@ -184,9 +200,9 @@
             -webkit-box-align: center;
                 -ms-flex-align: center;
                     align-items: center;
-            -webkit-box-pack: center;
-                -ms-flex-pack: center;
-                    justify-content: center;
+            -webkit-box-pack: start;
+                -ms-flex-pack: start;
+                    justify-content: flex-start;
             width: 100%;
             height: 100%;
             position: absolute;
@@ -194,12 +210,25 @@
             left: 0;
             z-index: 1;
             background: linear-gradient(135deg, #050816, #0a1931, #102a49) !important;
+            padding-top: 40px; /* 按钮置顶间距 */
+            gap: 40px; /* 按钮与联系信息的间距 */
         }
         .page3 h1 {
             font-size: 80px;
             text-shadow: 0 0 15px rgba(80, 140, 255, 0.7);
             letter-spacing: 5px;
             margin: 0;
+        }
+        /* 新增：第三页联系信息 - 普通大小字体 */
+        .contact-info {
+            font-size: 18px;
+            color: #e0efff;
+            text-align: center;
+            line-height: 2;
+        }
+        .contact-info a {
+            color: #a0c8ff;
+            text-decoration: underline;
         }
         body.red-gradient {
             background: linear-gradient(135deg, #ff0000, #cc0000, #990000) !important;
@@ -214,6 +243,12 @@
     </style>
 </head>
 <body>
+    <!-- 所有页面共用的置底信息 - 右下角固定 -->
+    <div class="fixed-bottom">
+        <a href="https://zsy131039.github.io/zsy131039/" target="_blank">https://zsy131039.github.io/zsy131039/</a><br>
+        页面解释权由zsy131039所有
+    </div>
+
     <!-- 第一页（初始页） -->
     <div class="page page1" id="page1">
         <h1>Welcome</h1>
@@ -221,17 +256,24 @@
         <button class="next-btn" id="nextBtn">Next</button>
     </div>
 
-    <!-- 第二页（花屏后页面）：新增“关于”按钮 -->
+    <!-- 第二页（花屏后页面） -->
     <div class="page page2 page-hidden" id="page2">
         <h1>Welcome</h1>
         <a href="https://space.bilibili.com/3546836189055103?spm_id_from=333.1007.0.0" target="_blank" class="bilibili-btn">哔哩哔哩</a>
         <a href="javascript:;" class="video-btn" id="videoBtn">视频号</a>
-        <a href="javascript:;" class="about-btn" id="aboutBtn">关于</a> <!-- 新增：关于按钮 -->
+        <a href="javascript:;" class="about-btn" id="aboutBtn">关于</a>
     </div>
 
-    <!-- 新增：第三个页面（关于页） -->
+    <!-- 第三页（关于页）：调整按钮位置+新增联系信息 -->
     <div class="page page3 page-hidden" id="page3">
         <h1>About</h1>
+        <!-- 联系信息：普通字体，换行显示 -->
+        <div class="contact-info">
+            <p><a href="https://zsy131039.github.io/zsy131039/" target="_blank">https://zsy131039.github.io/zsy131039/</a></p>
+            <p>邮箱：3923500604@qq.com</p>
+            <p>chinadreamteam@163.com</p>
+            <p>zsy131039@qq.com</p>
+        </div>
     </div>
 
     <div class="glitch-screen" id="glitchScreen"></div>
@@ -244,12 +286,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             const page1 = document.getElementById('page1');
             const page2 = document.getElementById('page2');
-            const page3 = document.getElementById('page3'); // 新增：第三页元素
+            const page3 = document.getElementById('page3');
             const nextBtn = document.getElementById('nextBtn');
             const glitchScreen = document.getElementById('glitchScreen');
             const glitchAudio = document.getElementById('glitchAudio');
             const videoBtn = document.getElementById('videoBtn');
-            const aboutBtn = document.getElementById('aboutBtn'); // 新增：关于按钮元素
+            const aboutBtn = document.getElementById('aboutBtn');
             const body = document.body;
             let isTriggered = false;
             let glitchTimer = null;
@@ -257,11 +299,9 @@
             const IMG_HEIGHT = 720;
             const IMG_RATIO = IMG_WIDTH / IMG_HEIGHT;
 
-            // 新增：关于按钮点击事件 - 切换标题+跳转到第三页
+            // 关于按钮点击事件（不变）
             aboutBtn.addEventListener('click', function() {
-                // 1. 切换网页标题为 "Github - zsy131039 : 关于"
                 document.title = "Github - zsy131039 : 关于";
-                // 2. 隐藏第二页，显示第三页
                 page2.classList.add('page-hidden');
                 page3.classList.remove('page-hidden');
             });
