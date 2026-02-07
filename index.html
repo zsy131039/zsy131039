@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <title>GitHub - zsy131039</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <!-- 新增：网页icon（favicon），使用你提供的图片 -->
-    <link rel="icon" href="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/3f11d722036b47448712220100d1780b.jpeg~tplv-a9rns2rl98-image.jpeg?lk3s=8e244e95&rcl=2026020715314136021E9E722E6D0D7A3D&rrcfp=dafada99&x-expires=2086280381&x-signature=G9p9B%2BzQdF%2B80D%2B2cV5WJtB1%2BqM%3D" type="image/jpeg">
-    <link rel="shortcut icon" href="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/3f11d722036b47448712220100d1780b.jpeg~tplv-a9rns2rl98-image.jpeg?lk3s=8e244e95&rcl=2026020715314136021E9E722E6D0D7A3D&rrcfp=dafada99&x-expires=2086280381&x-signature=G9p9B%2BzQdF%2B80D%2B2cV5WJtB1%2BqM%3D" type="image/jpeg">
+    <!-- 网页icon -->
+    <link rel="icon" href="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/cfb0fb2bf77a4c33a5c4fcc693edd936.jpg~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=202602071350202E933252BAE60E15B102&rrcfp=dafada99&x-expires=2086667421&x-signature=ktrgjSDQrbjDfaGwn%2BpO6WcFaxE%3D" type="image/png">
+    <link rel="shortcut icon" href="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/cfb0fb2bf77a4c33a5c4fcc693edd936.jpg~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=202602071350202E933252BAE60E15B102&rrcfp=dafada99&x-expires=2086667421&x-signature=ktrgjSDQrbjDfaGwn%2BpO6WcFaxE%3D" type="image/png">
     <style>
         * {
             margin: 0;
@@ -97,6 +97,7 @@
             opacity: 1;
             pointer-events: auto;
         }
+        /* 第二页：增加一个按钮的间距，保持布局均匀 */
         .page2 {
             display: -webkit-box;
             display: -ms-flexbox;
@@ -112,7 +113,7 @@
                 -ms-flex-pack: start;
                     justify-content: flex-start;
             padding-top: 40px;
-            gap: 30px;
+            gap: 25px; /* 微调间距，适配三个元素 */
             z-index: 1;
         }
         .page2 h1 {
@@ -121,7 +122,8 @@
             letter-spacing: 5px;
             margin: 0;
         }
-        .bilibili-btn {
+        /* 哔哩哔哩/关于按钮通用样式（保持一致） */
+        .bilibili-btn, .about-btn {
             padding: 12px 80px;
             border: 2px solid;
             border-image: linear-gradient(45deg, #000, #fff, #000) 1;
@@ -140,11 +142,12 @@
             outline: none;
             cursor: pointer;
         }
-        .bilibili-btn:hover {
+        .bilibili-btn:hover, .about-btn:hover {
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
             -webkit-transform: scale(1.05);
                     transform: scale(1.05);
         }
+        /* 视频号按钮样式（不变） */
         .video-btn {
             padding: 12px 80px;
             border: 2px solid;
@@ -169,6 +172,35 @@
             -webkit-transform: scale(1.05);
                     transform: scale(1.05);
         }
+        /* 新增：第三个页面（关于页）样式，和整体风格统一 */
+        .page3 {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+                -ms-flex-direction: column;
+                    flex-direction: column;
+            -webkit-box-align: center;
+                -ms-flex-align: center;
+                    align-items: center;
+            -webkit-box-pack: center;
+                -ms-flex-pack: center;
+                    justify-content: center;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            background: linear-gradient(135deg, #050816, #0a1931, #102a49) !important;
+        }
+        .page3 h1 {
+            font-size: 80px;
+            text-shadow: 0 0 15px rgba(80, 140, 255, 0.7);
+            letter-spacing: 5px;
+            margin: 0;
+        }
         body.red-gradient {
             background: linear-gradient(135deg, #ff0000, #cc0000, #990000) !important;
             background-size: 200% 200% !important;
@@ -182,16 +214,24 @@
     </style>
 </head>
 <body>
+    <!-- 第一页（初始页） -->
     <div class="page page1" id="page1">
         <h1>Welcome</h1>
         <p>网站正在更新中，请敬请期待 --zsy131039</p>
         <button class="next-btn" id="nextBtn">Next</button>
     </div>
 
+    <!-- 第二页（花屏后页面）：新增“关于”按钮 -->
     <div class="page page2 page-hidden" id="page2">
         <h1>Welcome</h1>
         <a href="https://space.bilibili.com/3546836189055103?spm_id_from=333.1007.0.0" target="_blank" class="bilibili-btn">哔哩哔哩</a>
         <a href="javascript:;" class="video-btn" id="videoBtn">视频号</a>
+        <a href="javascript:;" class="about-btn" id="aboutBtn">关于</a> <!-- 新增：关于按钮 -->
+    </div>
+
+    <!-- 新增：第三个页面（关于页） -->
+    <div class="page page3 page-hidden" id="page3">
+        <h1>About</h1>
     </div>
 
     <div class="glitch-screen" id="glitchScreen"></div>
@@ -204,10 +244,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             const page1 = document.getElementById('page1');
             const page2 = document.getElementById('page2');
+            const page3 = document.getElementById('page3'); // 新增：第三页元素
             const nextBtn = document.getElementById('nextBtn');
             const glitchScreen = document.getElementById('glitchScreen');
             const glitchAudio = document.getElementById('glitchAudio');
             const videoBtn = document.getElementById('videoBtn');
+            const aboutBtn = document.getElementById('aboutBtn'); // 新增：关于按钮元素
             const body = document.body;
             let isTriggered = false;
             let glitchTimer = null;
@@ -215,6 +257,16 @@
             const IMG_HEIGHT = 720;
             const IMG_RATIO = IMG_WIDTH / IMG_HEIGHT;
 
+            // 新增：关于按钮点击事件 - 切换标题+跳转到第三页
+            aboutBtn.addEventListener('click', function() {
+                // 1. 切换网页标题为 "Github - zsy131039 : 关于"
+                document.title = "Github - zsy131039 : 关于";
+                // 2. 隐藏第二页，显示第三页
+                page2.classList.add('page-hidden');
+                page3.classList.remove('page-hidden');
+            });
+
+            // 视频号按钮闪烁逻辑（不变）
             videoBtn.addEventListener('click', function() {
                 if (body.classList.contains('flashing')) return;
                 body.classList.add('flashing');
@@ -239,6 +291,7 @@
                 }, interval);
             });
 
+            // 花屏触发逻辑（不变）
             function randomCropImg() {
                 const scaleW = Math.random() * 0.7 + 0.3;
                 const scaleH = Math.random() * 0.7 + 0.3;
