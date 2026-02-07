@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Github - zsy131039</title>
+    <title>GitHub - zsy131039</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- 网页icon -->
     <link rel="icon" href="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/cfb0fb2bf77a4c33a5c4fcc693edd936.jpg~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=202602071350202E933252BAE60E15B102&rrcfp=dafada99&x-expires=2086667421&x-signature=ktrgjSDQrbjDfaGwn%2BpO6WcFaxE%3D" type="image/png">
@@ -23,10 +23,33 @@
             margin: 0;
             padding: 0;
             transition: background 0.08s ease !important;
-            /* 给body添加相对定位，作为置底信息的父容器 */
             position: relative;
         }
-        /* 新增：所有页面置底信息 - 右下角固定 */
+        /* 新增：所有页面左上角小狗图片按钮 */
+        .dog-logo {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 80px; /* 图片尺寸，可调整 */
+            height: 80px;
+            border-radius: 8px; /* 轻微圆角，更美观 */
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #000, #fff, #000) 1; /* 黑白渐变边框，和其他按钮统一 */
+            overflow: hidden; /* 防止图片超出边框 */
+            cursor: pointer;
+            z-index: 9999; /* 最高层级，不被任何元素遮挡 */
+            transition: all 0.3s ease;
+        }
+        .dog-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 图片填充容器，不变形 */
+        }
+        .dog-logo:hover {
+            transform: scale(1.05); /* hover轻微放大 */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.7); /* 白色发光 */
+        }
+        /* 所有页面置底信息 - 右下角固定 */
         .fixed-bottom {
             position: fixed;
             bottom: 20px;
@@ -36,12 +59,12 @@
             color: #e0efff;
             text-align: right;
             line-height: 1.5;
-            pointer-events: none; /* 避免遮挡其他元素点击 */
+            pointer-events: none;
         }
         .fixed-bottom a {
             color: #a0c8ff;
             text-decoration: underline;
-            pointer-events: auto; /* 链接可点击 */
+            pointer-events: auto;
         }
         .page {
             width: 100%;
@@ -188,7 +211,7 @@
             -webkit-transform: scale(1.05);
                     transform: scale(1.05);
         }
-        /* 调整：第三页 - About按钮置顶居中，下方添加联系信息 */
+        /* 第三页：右上角返回按钮容器 + 调整布局 */
         .page3 {
             display: -webkit-box;
             display: -ms-flexbox;
@@ -210,8 +233,9 @@
             left: 0;
             z-index: 1;
             background: linear-gradient(135deg, #050816, #0a1931, #102a49) !important;
-            padding-top: 40px; /* 按钮置顶间距 */
-            gap: 40px; /* 按钮与联系信息的间距 */
+            padding-top: 40px;
+            gap: 40px;
+            position: relative;
         }
         .page3 h1 {
             font-size: 80px;
@@ -219,7 +243,7 @@
             letter-spacing: 5px;
             margin: 0;
         }
-        /* 新增：第三页联系信息 - 普通大小字体 */
+        /* 第三页联系信息 */
         .contact-info {
             font-size: 18px;
             color: #e0efff;
@@ -229,6 +253,37 @@
         .contact-info a {
             color: #a0c8ff;
             text-decoration: underline;
+        }
+        /* 第三页右上角返回按钮样式 - 方形黑白渐变框 */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #000, #fff, #000) 1;
+            background: transparent;
+            color: #ffffff;
+            font-family: "Microsoft YaHei", "微软雅黑";
+            font-size: 18px;
+            text-align: center;
+            line-height: 56px;
+            text-decoration: none;
+            -webkit-user-select: none;
+               -moz-user-select: none;
+                -ms-user-select: none;
+                    user-select: none;
+            -webkit-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+            outline: none;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .back-btn:hover {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+            -webkit-transform: scale(1.05);
+                    transform: scale(1.05);
         }
         body.red-gradient {
             background: linear-gradient(135deg, #ff0000, #cc0000, #990000) !important;
@@ -243,7 +298,12 @@
     </style>
 </head>
 <body>
-    <!-- 所有页面共用的置底信息 - 右下角固定 -->
+    <!-- 新增：所有页面左上角小狗图片按钮 -->
+    <div class="dog-logo" id="dogLogo">
+        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/cfb0fb2bf77a4c33a5c4fcc693edd936.jpg~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=202602071350202E933252BAE60E15B102&rrcfp=dafada99&x-expires=2086667421&x-signature=ktrgjSDQrbjDfaGwn%2BpO6WcFaxE%3D" alt="小狗logo">
+    </div>
+
+    <!-- 所有页面共用的置底信息 -->
     <div class="fixed-bottom">
         <a href="https://zsy131039.github.io/zsy131039/" target="_blank">https://zsy131039.github.io/zsy131039/</a><br>
         页面解释权由zsy131039所有
@@ -264,10 +324,10 @@
         <a href="javascript:;" class="about-btn" id="aboutBtn">关于</a>
     </div>
 
-    <!-- 第三页（关于页）：调整按钮位置+新增联系信息 -->
+    <!-- 第三页（关于页） -->
     <div class="page page3 page-hidden" id="page3">
+        <a href="javascript:;" class="back-btn" id="backBtn">返回</a>
         <h1>About</h1>
-        <!-- 联系信息：普通字体，换行显示 -->
         <div class="contact-info">
             <p><a href="https://zsy131039.github.io/zsy131039/" target="_blank">https://zsy131039.github.io/zsy131039/</a></p>
             <p>邮箱：3923500604@qq.com</p>
@@ -292,6 +352,8 @@
             const glitchAudio = document.getElementById('glitchAudio');
             const videoBtn = document.getElementById('videoBtn');
             const aboutBtn = document.getElementById('aboutBtn');
+            const backBtn = document.getElementById('backBtn');
+            const dogLogo = document.getElementById('dogLogo'); // 新增：小狗图片按钮元素
             const body = document.body;
             let isTriggered = false;
             let glitchTimer = null;
@@ -299,11 +361,30 @@
             const IMG_HEIGHT = 720;
             const IMG_RATIO = IMG_WIDTH / IMG_HEIGHT;
 
+            // 新增：小狗图片点击事件 - 跳转到第二页（花屏后的页面）
+            dogLogo.addEventListener('click', function() {
+                // 1. 恢复网页标题为原始标题
+                document.title = "Github - zsy131039";
+                // 2. 隐藏其他页面，只显示第二页
+                page1.classList.add('page-hidden');
+                page3.classList.add('page-hidden');
+                page2.classList.remove('page-hidden');
+                // 3. 重置花屏触发状态（避免重复触发问题）
+                isTriggered = true;
+            });
+
             // 关于按钮点击事件（不变）
             aboutBtn.addEventListener('click', function() {
                 document.title = "Github - zsy131039 : 关于";
                 page2.classList.add('page-hidden');
                 page3.classList.remove('page-hidden');
+            });
+
+            // 返回按钮点击事件（不变）
+            backBtn.addEventListener('click', function() {
+                document.title = "Github - zsy131039";
+                page3.classList.add('page-hidden');
+                page2.classList.remove('page-hidden');
             });
 
             // 视频号按钮闪烁逻辑（不变）
