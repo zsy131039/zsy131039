@@ -25,29 +25,29 @@
             transition: background 0.08s ease !important;
             position: relative;
         }
-        /* 新增：所有页面左上角小狗图片按钮 */
+        /* 所有页面左上角小狗图片按钮 */
         .dog-logo {
             position: fixed;
             top: 20px;
             left: 20px;
-            width: 80px; /* 图片尺寸，可调整 */
+            width: 80px;
             height: 80px;
-            border-radius: 8px; /* 轻微圆角，更美观 */
+            border-radius: 8px;
             border: 2px solid;
-            border-image: linear-gradient(45deg, #000, #fff, #000) 1; /* 黑白渐变边框，和其他按钮统一 */
-            overflow: hidden; /* 防止图片超出边框 */
+            border-image: linear-gradient(45deg, #000, #fff, #000) 1;
+            overflow: hidden;
             cursor: pointer;
-            z-index: 9999; /* 最高层级，不被任何元素遮挡 */
+            z-index: 9999;
             transition: all 0.3s ease;
         }
         .dog-logo img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 图片填充容器，不变形 */
+            object-fit: cover;
         }
         .dog-logo:hover {
-            transform: scale(1.05); /* hover轻微放大 */
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.7); /* 白色发光 */
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
         }
         /* 所有页面置底信息 - 右下角固定 */
         .fixed-bottom {
@@ -139,6 +139,7 @@
             opacity: 1;
             pointer-events: auto;
         }
+        /* 第二页：新增“QQ群”按钮，调整间距 */
         .page2 {
             display: -webkit-box;
             display: -ms-flexbox;
@@ -154,7 +155,7 @@
                 -ms-flex-pack: start;
                     justify-content: flex-start;
             padding-top: 40px;
-            gap: 25px;
+            gap: 20px; /* 适配四个按钮，间距更紧凑 */
             z-index: 1;
         }
         .page2 h1 {
@@ -163,7 +164,8 @@
             letter-spacing: 5px;
             margin: 0;
         }
-        .bilibili-btn, .about-btn {
+        /* 哔哩哔哩/关于/QQ群按钮通用样式（保持一致） */
+        .bilibili-btn, .about-btn, .qqgroup-btn {
             padding: 12px 80px;
             border: 2px solid;
             border-image: linear-gradient(45deg, #000, #fff, #000) 1;
@@ -182,7 +184,7 @@
             outline: none;
             cursor: pointer;
         }
-        .bilibili-btn:hover, .about-btn:hover {
+        .bilibili-btn:hover, .about-btn:hover, .qqgroup-btn:hover {
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
             -webkit-transform: scale(1.05);
                     transform: scale(1.05);
@@ -285,6 +287,33 @@
             -webkit-transform: scale(1.05);
                     transform: scale(1.05);
         }
+        /* 新增：二维码全屏遮罩层 */
+        .qr-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85); /* 半透明黑色背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000; /* 最高层级，覆盖所有内容 */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .qr-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .qr-overlay img {
+            max-width: 80%;
+            max-height: 80%;
+            border: 4px solid #fff; /* 白色边框，突出二维码 */
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
         body.red-gradient {
             background: linear-gradient(135deg, #ff0000, #cc0000, #990000) !important;
             background-size: 200% 200% !important;
@@ -298,9 +327,14 @@
     </style>
 </head>
 <body>
-    <!-- 新增：所有页面左上角小狗图片按钮 -->
+    <!-- 所有页面左上角小狗图片按钮 -->
     <div class="dog-logo" id="dogLogo">
         <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/cfb0fb2bf77a4c33a5c4fcc693edd936.jpg~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=202602071350202E933252BAE60E15B102&rrcfp=dafada99&x-expires=2086667421&x-signature=ktrgjSDQrbjDfaGwn%2BpO6WcFaxE%3D" alt="小狗logo">
+    </div>
+
+    <!-- 新增：二维码全屏遮罩层 -->
+    <div class="qr-overlay" id="qrOverlay">
+        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/6161d21d20284d38808d202602071650.jpg~tplv-a9rns2rl98-image.jpeg?lk3s=8e244e95&rcl=2026020716510136021E9E722E6D0D7A3D&rrcfp=dafada99&x-expires=2086280381&x-signature=G9p9B%2BzQdF%2B80D%2B2cV5WJtB1%2BqM%3D" alt="QQ群二维码">
     </div>
 
     <!-- 所有页面共用的置底信息 -->
@@ -316,12 +350,13 @@
         <button class="next-btn" id="nextBtn">Next</button>
     </div>
 
-    <!-- 第二页（花屏后页面） -->
+    <!-- 第二页（花屏后页面）：新增“QQ群”按钮 -->
     <div class="page page2 page-hidden" id="page2">
         <h1>Welcome</h1>
         <a href="https://space.bilibili.com/3546836189055103?spm_id_from=333.1007.0.0" target="_blank" class="bilibili-btn">哔哩哔哩</a>
         <a href="javascript:;" class="video-btn" id="videoBtn">视频号</a>
         <a href="javascript:;" class="about-btn" id="aboutBtn">关于</a>
+        <a href="javascript:;" class="qqgroup-btn" id="qqgroupBtn">QQ群</a> <!-- 新增：QQ群按钮 -->
     </div>
 
     <!-- 第三页（关于页） -->
@@ -340,7 +375,7 @@
     <audio id="glitchAudio" preload="auto" muted>
         <source src="https://cdn.jsdelivr.net/gh/freesound/archive@master/sounds/344/344789__jokerman__digital-glitch-01.wav" type="audio/wav">
         <source src="https://cdn.jsdelivr.net/gh/freesound/archive@master/sounds/344/344789__jokerman__digital-glitch-01.mp3" type="audio/mpeg">
-    </audio>
+    
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -353,7 +388,9 @@
             const videoBtn = document.getElementById('videoBtn');
             const aboutBtn = document.getElementById('aboutBtn');
             const backBtn = document.getElementById('backBtn');
-            const dogLogo = document.getElementById('dogLogo'); // 新增：小狗图片按钮元素
+            const dogLogo = document.getElementById('dogLogo');
+            const qqgroupBtn = document.getElementById('qqgroupBtn'); // 新增：QQ群按钮元素
+            const qrOverlay = document.getElementById('qrOverlay'); // 新增：二维码遮罩层元素
             const body = document.body;
             let isTriggered = false;
             let glitchTimer = null;
@@ -361,15 +398,23 @@
             const IMG_HEIGHT = 720;
             const IMG_RATIO = IMG_WIDTH / IMG_HEIGHT;
 
-            // 新增：小狗图片点击事件 - 跳转到第二页（花屏后的页面）
+            // 新增：QQ群按钮点击事件 - 显示二维码图片
+            qqgroupBtn.addEventListener('click', function() {
+                // 显示二维码遮罩层
+                qrOverlay.classList.add('active');
+                // 点击遮罩层任意位置关闭二维码
+                qrOverlay.addEventListener('click', function closeQr() {
+                    qrOverlay.classList.remove('active');
+                    qrOverlay.removeEventListener('click', closeQr); // 移除一次性事件
+                });
+            });
+
+            // 小狗图片点击事件（不变）
             dogLogo.addEventListener('click', function() {
-                // 1. 恢复网页标题为原始标题
                 document.title = "Github - zsy131039";
-                // 2. 隐藏其他页面，只显示第二页
                 page1.classList.add('page-hidden');
                 page3.classList.add('page-hidden');
                 page2.classList.remove('page-hidden');
-                // 3. 重置花屏触发状态（避免重复触发问题）
                 isTriggered = true;
             });
 
